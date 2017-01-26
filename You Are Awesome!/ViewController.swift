@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     
     var lastIndex = -1
     var lastImage = -1
+    var lastSound = -1
    let numbOfImages = 6
     let numbofSounds = 6
     
@@ -37,10 +38,7 @@ class ViewController: UIViewController {
         
     }
     
-    func playSound() {
-        var soundName = "sound" + String(arc4random_uniform(UInt32(numbofSounds)))
-        
-        
+    func playSound(soundName: String) {
         if let sound = NSDataAsset(name: soundName) {
             do {
                 try awesomePlayer = AVAudioPlayer(data: sound.data)
@@ -55,7 +53,18 @@ print("ERROR: could not load data from file \(soundName)")
         
     }
     
+    func nonRepeatedRandom(last: inout Int, range: Int) -> Int {
+        var random: Int = Int(arc4random_uniform(UInt32(range)))
+        
+        while random == last {
+            random = Int(arc4random_uniform(UInt32(range)))
+            
+        }
+        last = random
+        
+        return random
     
+    }
     
     @IBAction func messageButtonPressed(_ sender: UIButton) {
        
@@ -68,26 +77,19 @@ print("ERROR: could not load data from file \(soundName)")
                         "I can't wait to use your app!",
                         "You Are Da Bomb"]
         
-        var randomIndex: Int = Int(arc4random_uniform(UInt32(messages.count)))
-        var randomImage: Int = Int(arc4random_uniform(UInt32(numbOfImages)))
-        
+        var random: Int
        
-        while randomIndex == lastIndex {
-            randomIndex = Int(arc4random_uniform(UInt32(messages.count)))
+        random = nonRepeatedRandom(last: &lastIndex, range: messages.count)
+        messageLabel.text = messages[random]
         
-        }
-        messageLabel.text = messages[randomIndex]
-        lastIndex = randomIndex
-      
-        
-        while randomImage == lastImage {
-            randomImage = Int(arc4random_uniform(UInt32(numbOfImages)))
-        }
         awesomeImage.isHidden = false
-        awesomeImage.image = UIImage(named: "image" + String(randomImage))
-        lastImage = randomImage
+        random = nonRepeatedRandom(last: &lastImage, range: numbOfImages)
+      awesomeImage.image = UIImage(named: "image" + String(random))
         
-        playSound()
+        random = nonRepeatedRandom(last: &lastSound, range: numbofSounds)
+        playSound(soundName: "sound" + String(random))
+        
+        
         
         
         
