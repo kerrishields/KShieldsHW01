@@ -11,10 +11,13 @@ import AVFoundation
 
 class ViewController: UIViewController {
 
+    //MARK: properties
+    
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var messageButton: UIButton!
     @IBOutlet weak var awesomeImage: UIImageView!
     
+    @IBOutlet weak var soundSwitch: UISwitch!
     var awesomePlayer = AVAudioPlayer()
     
     var lastIndex = -1
@@ -36,6 +39,15 @@ class ViewController: UIViewController {
     
   
         
+    }
+    
+    
+    @IBAction func soundSwitchPressed(_ sender: UISwitch) {
+        if soundSwitch.isOn == false {
+            if lastSound != -1 {
+            awesomePlayer.stop()
+        }
+    }
     }
     
     func playSound(soundName: String) {
@@ -66,6 +78,10 @@ print("ERROR: could not load data from file \(soundName)")
     
     }
     
+    //MARK: Actions
+    
+
+    
     @IBAction func messageButtonPressed(_ sender: UIButton) {
        
         let messages = ["You Are Fantastic!",
@@ -86,9 +102,12 @@ print("ERROR: could not load data from file \(soundName)")
         random = nonRepeatedRandom(last: &lastImage, range: numbOfImages)
       awesomeImage.image = UIImage(named: "image" + String(random))
         
-        random = nonRepeatedRandom(last: &lastSound, range: numbofSounds)
-        playSound(soundName: "sound" + String(random))
         
+        
+        if soundSwitch.isOn {
+            random = nonRepeatedRandom(last: &lastSound, range: numbofSounds)
+            playSound(soundName: "sound" + String(random))
+        }
         
         
         
